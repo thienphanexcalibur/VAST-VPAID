@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VAST version="3.0">
+    <Ad id="1">
+        <InLine>
+            <AdSystem version="1.0">Coccoc Test Ad Server</AdSystem>
+            <AdTitle>Coccoc Vast</AdTitle>
+            <Description></Description>
+            <Error><![CDATA[https://coccoc.com/log?webhpAction=VASTError&name=vb45enteroSVast]]></Error>
+            <Impression id=""><![CDATA[https://coccoc.com/log?webhpAction=vastImpression&name=vb45enteroSVast&thisIsVast=1]]></Impression>
+            <Creatives>
+                <Creative>
+                    <Linear>
+                        <Duration>00:00:15</Duration>
+                        <TrackingEvents>
+                            <Tracking event="creativeView"><![CDATA[https://coccoc.com/log?webhpAction=bannerShown&bannerId=vb45enteroSVast&thisIsVast=1]]></Tracking>
+                            <Tracking event="creativeView"><![CDATA[https://coccoc.com/log?webhpAction=vBannerImpression&bannerId=vb45enteroSVast&thisIsVast=1]]></Tracking>
+                            <Tracking event="creativeView"><![CDATA[https://visitanalytics.userreport.com/hit.gif?t=SNV9af2e823&ord=[timestamp]]]></Tracking>
+                            <Tracking event="start"><![CDATA[https://coccoc.com/log?webhpAction=vBannerStartView&bannerId=vb45enteroSVast&thisIsVast=1]]></Tracking>
+                            <Tracking event="firstQuartile"><![CDATA[https://coccoc.com/log?webhpAction=vBanner25PercentsView&bannerId=vb45enteroSVast&thisIsVast=1]]></Tracking>
+                            <Tracking event="midpoint"><![CDATA[https://coccoc.com/log?webhpAction=vBanner50PercentsView&bannerId=vb45enteroSVast&thisIsVast=1]]></Tracking>
+                            <Tracking event="thirdQuartile"><![CDATA[https://coccoc.com/log?webhpAction=vBanner75PercentsView&bannerId=vb45enteroSVast&thisIsVast=1]]></Tracking>
+                            <Tracking event="complete"><![CDATA[https://coccoc.com/log?webhpAction=vBannerCompleteView&bannerId=vb45enteroSVast&thisIsVast=1]]></Tracking>
+                            <Tracking event="complete"><![CDATA[https://visitanalytics.userreport.com/hit.gif?t=SNV8dc69770&ord=[timestamp]]]></Tracking>
+                            <Tracking event="unmute"><![CDATA[https://coccoc.com/log?webhpAction=vBannerUnMute&bannerId=vb45enteroSVast&thisIsVast=1]]></Tracking>
+                            <Tracking event="mute"><![CDATA[https://coccoc.com/log?webhpAction=vBannerMute&bannerId=vb45enteroSVast&thisIsVast=1]]></Tracking>
+                        </TrackingEvents>
+                        <AdParameters>{&quot;videos&quot;:[{&quot;url&quot;:&quot;http://cdn2.coccoc.com/vb/45enteroS/video.mp4?2&quot;,&quot;type&quot;:&quot;video/mp4&quot;}],&quot;AdClickThru&quot;: &quot;https://clicktrackingv2.userreport.com/?SNV3a38b443;http://www.enterogermina.com.vn/?utm_source=coccoc_z&amp;utm_medium=cpv&amp;utm_campaign=enterob1.2017_z&amp;utm&quot;}</AdParameters>
+                        <VideoClicks>
+                            <ClickThrough><![CDATA[https://clicktrackingv2.userreport.com/?SNV3a38b443;http://www.enterogermina.com.vn/?utm_source=coccoc_z&utm_medium=cpv&utm_campaign=enterob1.2017_z&utm]]></ClickThrough>
+                            <ClickTracking><![CDATA[https://coccoc.com/log?webhpAction=bannerClick&bannerId=vb45enteroSVast&thisIsVast=1]]></ClickTracking>
+                        </VideoClicks>
+                        <MediaFiles>
+                            <MediaFile id="vpaid" width="640" height="360" type="application/javascript" delivery="progressive" scalable="true" apiFramework="VPAID"><![CDATA[]]></MediaFile>
+                            <MediaFile id="video" width="640" height="360" type="video/mp4" delivery="progressive" scalable="true" apiFramework="VPAID"><![CDATA[http://cdn2.coccoc.com/vb/45enteroS/video.mp4?2]]></MediaFile>
+                        </MediaFiles>
+                    </Linear>
+                </Creative>
+            </Creatives>
+        </InLine>
+    </Ad>
+</VAST>

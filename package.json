@@ -1,0 +1,16 @@
+{
+  "name": "vast-testing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "inspect": "0.0.2",
+    "uglify-js": "^3.6.0",
+    "vastacular": "^0.2.0"
+  }
+}
