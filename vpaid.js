@@ -1,4 +1,4 @@
-import VPAIDInterface from './interface/VPAIDInterface.js/index.js';
+import template from 'VPAIDTEMPLATE';
 
 /**
  * Main function called by wrapper to get the vpaid ad.
@@ -9,5 +9,5 @@ import VPAIDInterface from './interface/VPAIDInterface.js/index.js';
 
 
 window.getVPAIDAd = function() {
-  return new VPAIDInterface();
+  return template.testTemplate;
 };

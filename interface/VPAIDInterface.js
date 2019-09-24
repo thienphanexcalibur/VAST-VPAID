@@ -1,7 +1,7 @@
 /**
  * @constructor
  */
-const VPAIDInterface = function() {
+const VPAIDInterface = function(HTML_TEMPLATE = null) {
   // The slot is the div element on the main page that the ad is supposed to
   // occupy.
   this.slot_ = null;
@@ -28,6 +28,9 @@ const VPAIDInterface = function() {
     'width' : 0,
     'volume' : 50
   };
+
+  this.HTML_TEMPLATE = HTML_TEMPLATE;
+
 };
 
 VPAIDInterface.prototype.log = function (msg) {
@@ -37,7 +40,6 @@ VPAIDInterface.prototype.log = function (msg) {
 /**
  * Html to populate into the ad.  This provides all UI elements for the ad.
  */
-VPAIDInterface.HTML_TEMPLATE = '<div style="position: absolute; bottom:20px;; height: 100px; width: 100%; background: white">This is the banner</div>';
 
 
 /**
@@ -60,7 +62,6 @@ VPAIDInterface.prototype.initAd = function(
     creativeData,
     environmentVars) {
   // slot and videoSlot are passed as part of the environmentVars
-  console.log(environmentVars);
   const {AdParameters} = creativeData;
   this.slot_ = environmentVars.slot;
 
@@ -74,7 +75,7 @@ VPAIDInterface.prototype.initAd = function(
 
   this.log('initAd ' + width + 'x' + height +
       ' ' + viewMode + ' ' + desiredBitrate);
-  // this.renderSlot_();
+  this.renderSlot_();
   // this.addButtonListeners_();
   // this.fillProperties_();
   this.eventCallbacks_['AdLoaded']();
@@ -109,7 +110,7 @@ VPAIDInterface.prototype.createAdsVideo = function (videoSlot, AdParameters, env
  */
 VPAIDInterface.prototype.renderSlot_ = function() {
   console.log(this.adDuration)
-  var slotExists = this.slot_ && this.slot_.tagName === 'DIV';
+  const slotExists = this.slot_ && this.slot_.tagName === 'DIV';
   if (!slotExists) {
     this.slot_ = document.createElement('div');
     if (!document.body) {
@@ -117,7 +118,7 @@ VPAIDInterface.prototype.renderSlot_ = function() {
     }
     document.body.appendChild(this.slot_);
   }
-  this.slot_.innerHTML = VPAIDInterface.HTML_TEMPLATE;
+  this.slot_.innerHTML = this.HTML_TEMPLATE;
 };
 
 
@@ -126,8 +127,8 @@ VPAIDInterface.prototype.renderSlot_ = function() {
  * @private
  */
 VPAIDInterface.prototype.triggerEvent_ = function() {
-  var eventSelect = document.getElementById('eventSelect');
-  var value = eventSelect.value;
+  const eventSelect = document.getElementById('eventSelect');
+  const value = eventSelect.value;
   if (value == 'AdClickThru') {
     this.adClickThruHandler_();
   } else if (value == 'AdError') {
@@ -285,7 +286,7 @@ VPAIDInterface.prototype.collapseAd = function() {
  */
 VPAIDInterface.prototype.skipAd = function() {
   this.log('skipAd');
-  var skippableState = this.attributes_['skippableState'];
+  const skippableState = this.attributes_['skippableState'];
   if (skippableState) {
     if ('AdSkipped' in this.eventCallbacks_) {
       this.eventCallbacks_['AdSkipped']();
@@ -302,9 +303,9 @@ VPAIDInterface.prototype.skipAd = function() {
  * @param {string} eventName The callback type.
  * @param {Object} aContext The context for the callback.
  */
-VPAIDInterface.prototype.subscribe = function(aCallback, eventName, aContext) {
+VPAIDInterface.prototype.subscribe = function(aCallback, eventName) {
   this.log('Subscribe ' + aCallback);
-  var callBack = aCallback.bind(aContext);
+  const callBack = aCallback.bind(this);
   this.eventCallbacks_[eventName] = callBack;
 };
 
@@ -382,7 +383,7 @@ VPAIDInterface.prototype.getAdLinear = function() {
  * @param {string} message
  */
 VPAIDInterface.prototype.log = function(message) {
-  var logTextArea = document.getElementById('lastVpaidEvent');
+  const logTextArea = document.getElementById('lastVpaidEvent');
   if (logTextArea != null) {
     logTextArea.value = message;
   }
@@ -399,9 +400,9 @@ VPAIDInterface.prototype.adClickThruHandler_ = function() {
     this.log('Error: AdClickThru function callback not subscribed.');
     return;
   }
-  var clickThruUrl = document.getElementById('clickThruUrl').value;
-  var clickThruId = document.getElementById('clickThruId').value;
-  var clickThruPlayerHandles =
+  const clickThruUrl = document.getElementById('clickThruUrl').value;
+  const clickThruId = document.getElementById('clickThruId').value;
+  const clickThruPlayerHandles =
       document.getElementById('clickThruPlayerHandels').value;
   this.log('AdClickThu(' + clickThruUrl + ',' +
       clickThruId + ',' + clickThruPlayerHandles + ')');
@@ -422,7 +423,7 @@ VPAIDInterface.prototype.adErrorHandler_ = function() {
     this.log('AdError function callback not subscribed.');
     return;
   }
-  var adError = document.getElementById('adErrorMsg').value;
+  const adError = document.getElementById('adErrorMsg').value;
   this.log('adError(' + adError + ')');
   this.eventCallbacks_['AdError'](adError);
 };
@@ -438,7 +439,7 @@ VPAIDInterface.prototype.adLogHandler_ = function() {
     this.log('Error: AdLog function callback not subscribed.');
     return;
   }
-  var adLogMsg = document.getElementById('adLogMsg').value;
+  const adLogMsg = document.getElementById('adLogMsg').value;
   this.log('adLog(' + adLogMsg + ')');
   this.eventCallbacks_['AdLog'](adLogMsg);
 };
@@ -454,7 +455,7 @@ VPAIDInterface.prototype.adInteractionHandler_ = function() {
     this.log('Error: AdInteraction function callback not subscribed.');
     return;
   }
-  var adInteraction = document.getElementById('adInteractionId').value;
+  const adInteraction = document.getElementById('adInteractionId').value;
   this.log('adLog(' + adInteraction + ')');
   this.eventCallbacks_['AdInteraction'](adInteraction);
 };
@@ -466,17 +467,17 @@ VPAIDInterface.prototype.adInteractionHandler_ = function() {
  * @private
  */
 VPAIDInterface.prototype.eventSelected_ = function() {
-  var clickThruParams = document.getElementById('AdClickThruOptions');
-  var adErrorParams = document.getElementById('AdErrorOptions');
-  var adLogParams = document.getElementById('AdLogOptions');
-  var adInteractionParams = document.getElementById('AdInteractionOptions');
+  const clickThruParams = document.getElementById('AdClickThruOptions');
+  const adErrorParams = document.getElementById('AdErrorOptions');
+  const adLogParams = document.getElementById('AdLogOptions');
+  const adInteractionParams = document.getElementById('AdInteractionOptions');
   clickThruParams.style.display = 'none';
   adErrorParams.style.display = 'none';
   adLogParams.style.display = 'none';
   adInteractionParams.style.display = 'none';
 
-  var eventSelect = document.getElementById('eventSelect');
-  var value = eventSelect.value;
+  const eventSelect = document.getElementById('eventSelect');
+  const value = eventSelect.value;
   if (value == 'AdClickThru') {
     clickThruParams.style.display = 'inline';
   } else if (value == 'AdError') {
@@ -505,8 +506,8 @@ VPAIDInterface.prototype.isEventSubscribed_ = function(eventName) {
  * @private
  */
 VPAIDInterface.prototype.fillProperties_ = function() {
-  for (var key in this.attributes_) {
-    var span = document.getElementById(key);
+  for (const key in this.attributes_) {
+    const span = document.getElementById(key);
     span.textContent = this.attributes_[key];
   }
 };

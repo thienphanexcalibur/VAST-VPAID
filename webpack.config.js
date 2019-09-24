@@ -10,5 +10,11 @@ module.exports = {
   plugins: [
       new CleanWebpackPlugin()
   ],
+  resolve: {
+    alias: {
+      interface: path.resolve(__dirname, './interface'),
+      VPAIDTEMPLATE: path.resolve(__dirname, './VPAIDTEMPLATE')
+    }
+  },
   watch: true
 }
