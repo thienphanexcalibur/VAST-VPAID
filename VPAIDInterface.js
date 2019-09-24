@@ -1,7 +1,7 @@
 /**
  * @constructor
  */
-var VpaidAd = function() {
+var VPAIDInterface = function() {
   // The slot is the div element on the main page that the ad is supposed to
   // occupy.
   this.slot_ = null;
@@ -11,7 +11,7 @@ var VpaidAd = function() {
   // An object containing all registered events.  These events are all
   // callbacks from the vpaid ad.
   this.eventCallbacks_ = {
-    // 'adLoaded': this.startAd
+    'AdStarted': this.onAdStarted
   };
   // A list of attributes getable and setable.
   this.attributes_ = {
@@ -30,14 +30,14 @@ var VpaidAd = function() {
   };
 };
 
-VpaidAd.prototype.log = function (msg) {
+VPAIDInterface.prototype.log = function (msg) {
   console.log(msg);
 }
 
 /**
  * Html to populate into the ad.  This provides all UI elements for the ad.
  */
-VpaidAd.HTML_TEMPLATE = '<div></div>';
+VPAIDInterface.HTML_TEMPLATE = '<div style="position: absolute; bottom:20px;; height: 100px; width: 100%; background: white">This is the banner</div>';
 
 
 /**
@@ -52,7 +52,7 @@ VpaidAd.HTML_TEMPLATE = '<div></div>';
  * @param {Object} environmentVars Variables associated with the creative like
  *     the slot and video slot.
  */
-VpaidAd.prototype.initAd = function(
+VPAIDInterface.prototype.initAd = function(
     width,
     height,
     viewMode,
@@ -60,38 +60,55 @@ VpaidAd.prototype.initAd = function(
     creativeData,
     environmentVars) {
   // slot and videoSlot are passed as part of the environmentVars
-  console.log(environmentVars)
+  console.log(environmentVars);
   const {AdParameters} = creativeData;
-  const AdParameters_ = JSON.parse(AdParameters);
-  console.log(AdParameters_);
   this.slot_ = environmentVars.slot;
-  this.videoSlot_ = environmentVars.videoSlot;
-  this.videoSlot_.src = AdParameters_.videos[0].url;
-  this.videoSlot_.type = AdParameters_.videos[0].type;
-
-
 
   this.attributes_['width'] = width;
   this.attributes_['height'] = height;
   this.attributes_['viewMode'] = viewMode;
   this.attributes_['desiredBitrate'] = desiredBitrate;
 
+  // Keeping reference to the videoSlot node
+  this.createAdsVideo(environmentVars.videoSlot, AdParameters, environmentVars);
+
   this.log('initAd ' + width + 'x' + height +
       ' ' + viewMode + ' ' + desiredBitrate);
-  this.renderSlot_();
+  // this.renderSlot_();
   // this.addButtonListeners_();
   // this.fillProperties_();
   this.eventCallbacks_['AdLoaded']();
   this.eventCallbacks_['AdStarted']();
 };
 
-VpaidAd.protoye
+/**
+ * @param {Node} videoSlot The slot for video
+ * @param {Object} AdParameters Data from <AdParameters></AdParameters>
+ * @param {Object} EnvironmentVars
+ */
+VPAIDInterface.prototype.createAdsVideo = function (videoSlot, AdParameters, environmentVars) {
+  const AdParameters_ = JSON.parse(AdParameters);
+  const sourceNode = document.createElement('source');
+  sourceNode.src = AdParameters_.videos[0].url;
+  sourceNode.type = AdParameters_.videos[0].type;
+  videoSlot.appendChild(sourceNode);
+  if (environmentVars.videoSlotCanAutoPlay) {
+    videoSlot.autoplay = 'autoplay';
+    videoSlot.muted = 'muted';
+    videoSlot.loop = true;
+    videoSlot.onloadeddata = function (e) {
+      this.play();
+    }
+  }
+}
+
 
 /**
  * Populates the inner html of the slot.
  * @private
  */
-VpaidAd.prototype.renderSlot_ = function() {
+VPAIDInterface.prototype.renderSlot_ = function() {
+  console.log(this.adDuration)
   var slotExists = this.slot_ && this.slot_.tagName === 'DIV';
   if (!slotExists) {
     this.slot_ = document.createElement('div');
@@ -100,7 +117,7 @@ VpaidAd.prototype.renderSlot_ = function() {
     }
     document.body.appendChild(this.slot_);
   }
-  this.slot_.innerHTML = VpaidAd.HTML_TEMPLATE;
+  this.slot_.innerHTML = VPAIDInterface.HTML_TEMPLATE;
 };
 
 
@@ -108,7 +125,7 @@ VpaidAd.prototype.renderSlot_ = function() {
  * Triggers an event.
  * @private
  */
-VpaidAd.prototype.triggerEvent_ = function() {
+VPAIDInterface.prototype.triggerEvent_ = function() {
   var eventSelect = document.getElementById('eventSelect');
   var value = eventSelect.value;
   if (value == 'AdClickThru') {
@@ -130,7 +147,7 @@ VpaidAd.prototype.triggerEvent_ = function() {
  * @param {string} version
  * @return {string}
  */
-VpaidAd.prototype.handshakeVersion = function(version = '2.0') {
+VPAIDInterface.prototype.handshakeVersion = function(version = '2.0') {
   return version;
 };
 
@@ -138,18 +155,22 @@ VpaidAd.prototype.handshakeVersion = function(version = '2.0') {
 /**
  * Called by the wrapper to start the ad.
  */
-VpaidAd.prototype.startAd = function() {
+VPAIDInterface.prototype.startAd = function() {
   this.log('Starting ad');
   if ('AdStart' in this.eventCallbacks_) {
     this.eventCallbacks_['AdStarted']();
   }
 };
 
+VPAIDInterface.prototype.onStartAd = function () {
+  console.log('bbb')
+}
+
 
 /**
  * Called by the wrapper to stop the ad.
  */
-VpaidAd.prototype.stopAd = function() {
+VPAIDInterface.prototype.stopAd = function() {
   this.log('Stopping ad');
   if ('AdStop' in this.eventCallbacks_) {
     this.eventCallbacks_['AdStopped']();
@@ -160,7 +181,7 @@ VpaidAd.prototype.stopAd = function() {
 /**
  * @param {number} value The volume in percentage.
  */
-VpaidAd.prototype.setAdVolume = function(value) {
+VPAIDInterface.prototype.setAdVolume = function(value) {
   this.attributes_['volume'] = value;
   this.log('setAdVolume ' + value);
   if ('AdVolumeChange' in this.eventCallbacks_) {
@@ -172,7 +193,7 @@ VpaidAd.prototype.setAdVolume = function(value) {
 /**
  * @return {number} The volume of the ad.
  */
-VpaidAd.prototype.getAdVolume = function() {
+VPAIDInterface.prototype.getAdVolume = function() {
   this.log('getAdVolume');
   return this.attributes_['volume'];
 };
@@ -183,7 +204,7 @@ VpaidAd.prototype.getAdVolume = function() {
  * @param {number} height A new height.
  * @param {string} viewMode A new view mode.
  */
-VpaidAd.prototype.resizeAd = function(width, height, viewMode) {
+VPAIDInterface.prototype.resizeAd = function(width, height, viewMode) {
   this.log('resizeAd ' + width + 'x' + height + ' ' + viewMode);
   this.attributes_['width'] = width;
   this.attributes_['height'] = height;
@@ -197,7 +218,7 @@ VpaidAd.prototype.resizeAd = function(width, height, viewMode) {
 /**
  * Pauses the ad.
  */
-VpaidAd.prototype.pauseAd = function() {
+VPAIDInterface.prototype.pauseAd = function() {
   this.log('pauseAd');
   if ('AdPaused' in this.eventCallbacks_) {
     this.eventCallbacks_['AdPaused']();
@@ -208,7 +229,7 @@ VpaidAd.prototype.pauseAd = function() {
 /**
  * Resumes the ad.
  */
-VpaidAd.prototype.resumeAd = function() {
+VPAIDInterface.prototype.resumeAd = function() {
   this.log('resumeAd');
   if ('AdResumed' in this.eventCallbacks_) {
     this.eventCallbacks_['AdResumed']();
@@ -219,7 +240,7 @@ VpaidAd.prototype.resumeAd = function() {
 /**
  * Expands the ad.
  */
-VpaidAd.prototype.expandAd = function() {
+VPAIDInterface.prototype.expandAd = function() {
   this.log('expandAd');
   this.attributes_['expanded'] = true;
   if ('AdExpanded' in this.eventCallbacks_) {
@@ -233,7 +254,7 @@ VpaidAd.prototype.expandAd = function() {
  *
  * @return {boolean}
  */
-VpaidAd.prototype.getAdExpanded = function() {
+VPAIDInterface.prototype.getAdExpanded = function() {
   this.log('getAdExpanded');
   return this.attributes_['expanded'];
 };
@@ -244,7 +265,7 @@ VpaidAd.prototype.getAdExpanded = function() {
  *
  * @return {boolean}
  */
-VpaidAd.prototype.getAdSkippableState = function() {
+VPAIDInterface.prototype.getAdSkippableState = function() {
   this.log('getAdSkippableState');
   return this.attributes_['skippableState'];
 };
@@ -253,7 +274,7 @@ VpaidAd.prototype.getAdSkippableState = function() {
 /**
  * Collapses the ad.
  */
-VpaidAd.prototype.collapseAd = function() {
+VPAIDInterface.prototype.collapseAd = function() {
   this.log('collapseAd');
   this.attributes_['expanded'] = false;
 };
@@ -262,7 +283,7 @@ VpaidAd.prototype.collapseAd = function() {
 /**
  * Skips the ad.
  */
-VpaidAd.prototype.skipAd = function() {
+VPAIDInterface.prototype.skipAd = function() {
   this.log('skipAd');
   var skippableState = this.attributes_['skippableState'];
   if (skippableState) {
@@ -281,7 +302,7 @@ VpaidAd.prototype.skipAd = function() {
  * @param {string} eventName The callback type.
  * @param {Object} aContext The context for the callback.
  */
-VpaidAd.prototype.subscribe = function(aCallback, eventName, aContext) {
+VPAIDInterface.prototype.subscribe = function(aCallback, eventName, aContext) {
   this.log('Subscribe ' + aCallback);
   var callBack = aCallback.bind(aContext);
   this.eventCallbacks_[eventName] = callBack;
@@ -293,7 +314,7 @@ VpaidAd.prototype.subscribe = function(aCallback, eventName, aContext) {
  *
  * @param {string} eventName The callback type.
  */
-VpaidAd.prototype.unsubscribe = function(eventName) {
+VPAIDInterface.prototype.unsubscribe = function(eventName) {
   this.log('unsubscribe ' + eventName);
   this.eventCallbacks_[eventName] = null;
 };
@@ -302,7 +323,7 @@ VpaidAd.prototype.unsubscribe = function(eventName) {
 /**
  * @return {number} The ad width.
  */
-VpaidAd.prototype.getAdWidth = function() {
+VPAIDInterface.prototype.getAdWidth = function() {
   return this.attributes_['width'];
 };
 
@@ -310,7 +331,7 @@ VpaidAd.prototype.getAdWidth = function() {
 /**
  * @return {number} The ad height.
  */
-VpaidAd.prototype.getAdHeight = function() {
+VPAIDInterface.prototype.getAdHeight = function() {
   return this.attributes_['height'];
 };
 
@@ -318,7 +339,7 @@ VpaidAd.prototype.getAdHeight = function() {
 /**
  * @return {number} The time remaining in the ad.
  */
-VpaidAd.prototype.getAdRemainingTime = function() {
+VPAIDInterface.prototype.getAdRemainingTime = function() {
   return this.attributes_['remainingTime'];
 };
 
@@ -326,7 +347,7 @@ VpaidAd.prototype.getAdRemainingTime = function() {
 /**
  * @return {number} The duration of the ad.
  */
-VpaidAd.prototype.getAdDuration = function() {
+VPAIDInterface.prototype.getAdDuration = function() {
   return this.attributes_['duration'];
 };
 
@@ -334,7 +355,7 @@ VpaidAd.prototype.getAdDuration = function() {
 /**
  * @return {string} List of companions in vast xml.
  */
-VpaidAd.prototype.getAdCompanions = function() {
+VPAIDInterface.prototype.getAdCompanions = function() {
   return this.attributes_['companions'];
 };
 
@@ -342,7 +363,7 @@ VpaidAd.prototype.getAdCompanions = function() {
 /**
  * @return {string} A list of icons.
  */
-VpaidAd.prototype.getAdIcons = function() {
+VPAIDInterface.prototype.getAdIcons = function() {
   return this.attributes_['icons'];
 };
 
@@ -350,7 +371,7 @@ VpaidAd.prototype.getAdIcons = function() {
 /**
  * @return {boolean} True if the ad is a linear, false for non linear.
  */
-VpaidAd.prototype.getAdLinear = function() {
+VPAIDInterface.prototype.getAdLinear = function() {
   return this.attributes_['linear'];
 };
 
@@ -360,7 +381,7 @@ VpaidAd.prototype.getAdLinear = function() {
  *
  * @param {string} message
  */
-VpaidAd.prototype.log = function(message) {
+VPAIDInterface.prototype.log = function(message) {
   var logTextArea = document.getElementById('lastVpaidEvent');
   if (logTextArea != null) {
     logTextArea.value = message;
@@ -373,7 +394,7 @@ VpaidAd.prototype.log = function(message) {
  *
  * @private
  */
-VpaidAd.prototype.adClickThruHandler_ = function() {
+VPAIDInterface.prototype.adClickThruHandler_ = function() {
   if (!this.isEventSubscribed_('AdClickThru')) {
     this.log('Error: AdClickThru function callback not subscribed.');
     return;
@@ -396,7 +417,7 @@ VpaidAd.prototype.adClickThruHandler_ = function() {
  *
  * @private
  */
-VpaidAd.prototype.adErrorHandler_ = function() {
+VPAIDInterface.prototype.adErrorHandler_ = function() {
   if (!this.isEventSubscribed_('AdError')) {
     this.log('AdError function callback not subscribed.');
     return;
@@ -412,7 +433,7 @@ VpaidAd.prototype.adErrorHandler_ = function() {
  *
  * @private
  */
-VpaidAd.prototype.adLogHandler_ = function() {
+VPAIDInterface.prototype.adLogHandler_ = function() {
   if (!this.isEventSubscribed_('AdLog')) {
     this.log('Error: AdLog function callback not subscribed.');
     return;
@@ -428,7 +449,7 @@ VpaidAd.prototype.adLogHandler_ = function() {
  *
  * @private
  */
-VpaidAd.prototype.adInteractionHandler_ = function() {
+VPAIDInterface.prototype.adInteractionHandler_ = function() {
   if (!this.isEventSubscribed_('AdInteraction')) {
     this.log('Error: AdInteraction function callback not subscribed.');
     return;
@@ -444,7 +465,7 @@ VpaidAd.prototype.adInteractionHandler_ = function() {
  *
  * @private
  */
-VpaidAd.prototype.eventSelected_ = function() {
+VPAIDInterface.prototype.eventSelected_ = function() {
   var clickThruParams = document.getElementById('AdClickThruOptions');
   var adErrorParams = document.getElementById('AdErrorOptions');
   var adLogParams = document.getElementById('AdLogOptions');
@@ -473,7 +494,7 @@ VpaidAd.prototype.eventSelected_ = function() {
  * @return {Boolean} True if this.eventCallbacks_ contains the callback.
  * @private
  */
-VpaidAd.prototype.isEventSubscribed_ = function(eventName) {
+VPAIDInterface.prototype.isEventSubscribed_ = function(eventName) {
   return typeof(this.eventCallbacks_[eventName]) === 'function';
 };
 
@@ -483,7 +504,7 @@ VpaidAd.prototype.isEventSubscribed_ = function(eventName) {
  *
  * @private
  */
-VpaidAd.prototype.fillProperties_ = function() {
+VPAIDInterface.prototype.fillProperties_ = function() {
   for (var key in this.attributes_) {
     var span = document.getElementById(key);
     span.textContent = this.attributes_[key];
@@ -496,6 +517,6 @@ VpaidAd.prototype.fillProperties_ = function() {
  *
  * @return {Object}
  */
-var getVPAIDAd = function() {
-  return new VpaidAd();
+window.getVPAIDAd = function() {
+  return new VPAIDInterface();
 };
