@@ -1,3 +1,5 @@
+// Run this script to compile from vast-schema.js to mocked-vast.xml
+
 const {VAST} = require('vastacular');
 const util = require('util');
 const fs = require('fs');
@@ -23,6 +25,7 @@ if (!fs.existsSync(path.join(output, 'vast-schema.js'))) {
     });
   })();
 } else {
+
   const VASTSchema = require(path.join(output, './vast-schema.js'));
   const mockedVast = (new VAST(VASTSchema)).toXML();
   fs.writeFile(path.join(output, 'mocked-vast.xml'), mockedVast, (err) => {

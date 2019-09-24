@@ -4,6 +4,9 @@ import VPAIDInterface from './VPAIDInterface.js';
  *
  * @return {Object}
  */
+
+
+
 window.getVPAIDAd = function() {
   return new VPAIDInterface();
 };
