@@ -1,7 +1,7 @@
 /**
  * @constructor
  */
-var VPAIDInterface = function() {
+const VPAIDInterface = function() {
   // The slot is the div element on the main page that the ad is supposed to
   // occupy.
   this.slot_ = null;
@@ -510,13 +510,4 @@ VPAIDInterface.prototype.fillProperties_ = function() {
     span.textContent = this.attributes_[key];
   }
 };
-
-
-/**
- * Main function called by wrapper to get the vpaid ad.
- *
- * @return {Object}
- */
-window.getVPAIDAd = function() {
-  return new VPAIDInterface();
-};
+export default VPAIDInterface

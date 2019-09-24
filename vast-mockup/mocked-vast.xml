@@ -30,7 +30,7 @@
                             <ClickTracking><![CDATA[https://coccoc.com/log?webhpAction=bannerClick&bannerId=vb45enteroSVast&thisIsVast=1]]></ClickTracking>
                         </VideoClicks>
                         <MediaFiles>
-                            <MediaFile id="vpaid" width="640" height="360" type="application/javascript" delivery="progressive" scalable="true" apiFramework="VPAID"><![CDATA[http://127.0.0.1:3003/VPAIDInterface.js]]></MediaFile>
+                            <MediaFile id="vpaid" width="640" height="360" type="application/javascript" delivery="progressive" scalable="true" apiFramework="VPAID"><![CDATA[http://127.0.0.1:3003/build/vpaid.js]]></MediaFile>
                             <MediaFile id="video" width="640" height="360" type="video/mp4" delivery="progressive" scalable="true" apiFramework="VPAID"><![CDATA[http://cdn2.coccoc.com/vb/45enteroS/video.mp4?2]]></MediaFile>
                         </MediaFiles>
                     </Linear>

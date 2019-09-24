@@ -77,7 +77,7 @@ module.exports =
               id: 'vpaid',
               delivery: 'progressive',
               type: 'application/javascript',
-              uri: 'http://127.0.0.1:3003/VPAIDInterface.js',
+              uri: 'http://127.0.0.1:3003/build/vpaid.js',
               width: 640,
               height: 360,
               scalable: true,
