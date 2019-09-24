@@ -1,4 +1,5 @@
-import VPAIDInterface from './VPAIDInterface.js';
+import VPAIDInterface from './interface/VPAIDInterface.js/index.js';
+
 /**
  * Main function called by wrapper to get the vpaid ad.
  *
