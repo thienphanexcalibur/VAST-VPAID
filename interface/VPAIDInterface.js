@@ -1,7 +1,7 @@
 /**
  * @constructor
  */
-const VPAIDInterface = function(HTML_TEMPLATE = null) {
+function VPAIDInterface(HTML_TEMPLATE = null) {
   // The slot is the div element on the main page that the ad is supposed to
   // occupy.
   this.slot_ = null;
@@ -11,7 +11,7 @@ const VPAIDInterface = function(HTML_TEMPLATE = null) {
   // An object containing all registered events.  These events are all
   // callbacks from the vpaid ad.
   this.eventCallbacks_ = {
-    'AdStarted': this.onAdStarted
+    'AdPaused': () => {console.log('aa')}
   };
   // A list of attributes getable and setable.
   this.attributes_ = {
@@ -32,15 +32,6 @@ const VPAIDInterface = function(HTML_TEMPLATE = null) {
   this.HTML_TEMPLATE = HTML_TEMPLATE;
 
 };
-
-VPAIDInterface.prototype.log = function (msg) {
-  console.log(msg);
-}
-
-/**
- * Html to populate into the ad.  This provides all UI elements for the ad.
- */
-
 
 /**
  * VPAID defined init ad, initializes all attributes in the ad.  Ad will
@@ -73,8 +64,12 @@ VPAIDInterface.prototype.initAd = function(
   // Keeping reference to the videoSlot node
   this.createAdsVideo(environmentVars.videoSlot, AdParameters, environmentVars);
 
-  this.log('initAd ' + width + 'x' + height +
-      ' ' + viewMode + ' ' + desiredBitrate);
+  this.log(`Init ads with:
+    WIDTH: ${width}
+    HEIGHT: ${height}
+    VIEWMODE: ${viewMode}
+    BITRATE: ${desiredBitrate}`
+  );
   this.renderSlot_();
   // this.addButtonListeners_();
   // this.fillProperties_();
@@ -109,7 +104,6 @@ VPAIDInterface.prototype.createAdsVideo = function (videoSlot, AdParameters, env
  * @private
  */
 VPAIDInterface.prototype.renderSlot_ = function() {
-  console.log(this.adDuration)
   const slotExists = this.slot_ && this.slot_.tagName === 'DIV';
   if (!slotExists) {
     this.slot_ = document.createElement('div');
@@ -148,7 +142,7 @@ VPAIDInterface.prototype.triggerEvent_ = function() {
  * @param {string} version
  * @return {string}
  */
-VPAIDInterface.prototype.handshakeVersion = function(version = '2.0') {
+VPAIDInterface.prototype.handshakeVersion = function(version) {
   return version;
 };
 
@@ -158,14 +152,11 @@ VPAIDInterface.prototype.handshakeVersion = function(version = '2.0') {
  */
 VPAIDInterface.prototype.startAd = function() {
   this.log('Starting ad');
-  if ('AdStart' in this.eventCallbacks_) {
+  console.log(this.eventCallbacks_)
+  if ('AdStarted' in this.eventCallbacks_) {
     this.eventCallbacks_['AdStarted']();
   }
 };
-
-VPAIDInterface.prototype.onStartAd = function () {
-  console.log('bbb')
-}
 
 
 /**
@@ -223,14 +214,15 @@ VPAIDInterface.prototype.pauseAd = function() {
   this.log('pauseAd');
   if ('AdPaused' in this.eventCallbacks_) {
     this.eventCallbacks_['AdPaused']();
+    console.log('aaaaa')
   }
 };
-
 
 /**
  * Resumes the ad.
  */
 VPAIDInterface.prototype.resumeAd = function() {
+  console.log('aaaa')
   this.log('resumeAd');
   if ('AdResumed' in this.eventCallbacks_) {
     this.eventCallbacks_['AdResumed']();
@@ -303,9 +295,9 @@ VPAIDInterface.prototype.skipAd = function() {
  * @param {string} eventName The callback type.
  * @param {Object} aContext The context for the callback.
  */
-VPAIDInterface.prototype.subscribe = function(aCallback, eventName) {
-  this.log('Subscribe ' + aCallback);
-  const callBack = aCallback.bind(this);
+VPAIDInterface.prototype.subscribe = function(aCallback, eventName, aContext) {
+  this.log('Subscribed ' + eventName);
+  const callBack = aCallback.bind(aContext);
   this.eventCallbacks_[eventName] = callBack;
 };
 
@@ -383,11 +375,9 @@ VPAIDInterface.prototype.getAdLinear = function() {
  * @param {string} message
  */
 VPAIDInterface.prototype.log = function(message) {
-  const logTextArea = document.getElementById('lastVpaidEvent');
-  if (logTextArea != null) {
-    logTextArea.value = message;
-  }
+  console.log(message);
 };
+
 
 
 /**
@@ -498,6 +488,10 @@ VPAIDInterface.prototype.eventSelected_ = function() {
 VPAIDInterface.prototype.isEventSubscribed_ = function(eventName) {
   return typeof(this.eventCallbacks_[eventName]) === 'function';
 };
+
+VPAIDInterface.prototype.AdDurationChange = function () {
+  console.log('aaaaa')
+}
 
 
 /**
