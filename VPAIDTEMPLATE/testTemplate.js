@@ -3,7 +3,8 @@ const HTML_TEMPLATE = '<div style="position: absolute; bottom:20px;; height: 100
 
 
 function testTemplate(template) {
-  VPAIDInterface.prototype.constructor.call(this, template);
+  VPAIDInterface.call(this, template);
 }
-testTemplate.prototype = VPAIDInterface.prototype;
+testTemplate.prototype = Object.create(VPAIDInterface.prototype);
+testTemplate.prototype.constructor = VPAIDInterface;
 export default new testTemplate(HTML_TEMPLATE);
