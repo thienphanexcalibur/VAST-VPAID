@@ -87,7 +87,7 @@ module.exports =
               id: 'video',
               delivery: 'progressive',
               type: 'video/mp4',
-              uri: 'http://cdn2.coccoc.com/vb/45enteroS/video.mp4?2',
+              uri: 'https://cdn2.cache.vn/vb/45enteroS/video.mp4?2',
               width: 640,
               height: 360,
               scalable: true,

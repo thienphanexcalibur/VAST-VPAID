@@ -31,7 +31,7 @@
                         </VideoClicks>
                         <MediaFiles>
                             <MediaFile id="vpaid" width="640" height="360" type="application/javascript" delivery="progressive" scalable="true" apiFramework="VPAID"><![CDATA[http://127.0.0.1:3004/index.js]]></MediaFile>
-                            <MediaFile id="video" width="640" height="360" type="video/mp4" delivery="progressive" scalable="true" apiFramework="VPAID"><![CDATA[http://cdn2.coccoc.com/vb/45enteroS/video.mp4?2]]></MediaFile>
+                            <MediaFile id="video" width="640" height="360" type="video/mp4" delivery="progressive" scalable="true" apiFramework="VPAID"><![CDATA[https://cdn2.cache.vn/vb/45enteroS/video.mp4?2]]></MediaFile>
                         </MediaFiles>
                     </Linear>
                 </Creative>

@@ -161,10 +161,8 @@ VPAIDInterface.prototype._renderSlot = function () {
   this._setStyle(this.templateNode, {
     position: 'relative'
   })
-
   // Just a quick insert video slot before templateNode
   this.animationContainer.insertBefore(this.videoSlot, this.templateNode);
-
 };
 
 
